@@ -1,17 +1,23 @@
 @startuml
-!include <C4/C4_Container>
 !theme toy
 scale 1.5
 
-Container_Ext(ib, "Информационная безопастность")
-Container_Ext(any, "Потребитель уведомлений")
-Container(hr, "Кадры")
-ContainerQueue(kafka, "Kafka: topic employee_sync")
+actor "Пользователь" as user
+participant "Frontend" as f
+participant "Backend" as b
+participant "Server" as s
 
+title Просмотр пользователем истории заказов в рамках компании
+group  Проверка истории
+                user -> f: Авторизация и переход на страницу "Мои заказы"
+                f -> b: Запрос данных о пользователе
+                b -> s: Запрос данных о пользователе 
+                s -> b: Передача данных о пользователе
+                b -> f: 
+        else иногда происходит ручное обновление
+                admin -> hr: Обновить контракт сотрудника
+              hr -> kafka: Отправить сообщение о изменении статуса сотрудника
+end
 
-Rel_Down(hr, kafka, "Сформировать и отправить сообщение")
-
-Rel_Up(any, kafka, "Получить и обработать сообщение")
-Rel_Up(ib, kafka, "Получить и обработать сообщение")
 
 @enduml
